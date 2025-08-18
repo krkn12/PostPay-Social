@@ -1,0 +1,67 @@
+# Ignorar dependências e caches (evita enviar pastas pesadas)
+node_modules/
+**/node_modules/
+client/node_modules/
+server/node_modules/
+client/node_modules/.cache/
+
+# Build / dist / caches
+dist/
+build/
+out/
+.next/
+.parcel-cache/
+.cache/
+.vite/
+/.turbo/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Sistema / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Arquivos de ambiente / segredos
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+credentials.json
+*.pem
+*.key
+*.p12
+*.crt
+*.secring
+
+# Bancos locais / arquivos binários grandes
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sql
+
+# Arquivos temporários do sistema
+*.tmp
+*.temp
+*~
+
+# Evitar incluir repositórios aninhados
+PostPay-Social/
+PostPay-Social/.git
+
+# Docker
+.env.docker
+docker-compose.override.yml
+
+# Editor swap files
+*.swp
+*.swo
