@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -25,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import dashboardService from '../../services/dashboardService';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -34,6 +35,26 @@ const Navbar = () => {
   
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
+  const [points, setPoints] = useState(user?.points ?? 0);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadPoints = async () => {
+      try {
+        const res = await dashboardService.getDashboardData();
+        if (!mounted) return;
+        const pts = res?.dashboard?.user?.points ?? res?.dashboard?.stats?.totalPoints ?? user?.points ?? 0;
+        setPoints(pts);
+      } catch (err) {
+        // falhar silenciosamente — manter pontos do usuário
+        // console.error('Erro ao buscar pontos:', err);
+      }
+    };
+
+    if (isAuthenticated) loadPoints();
+
+    return () => { mounted = false; };
+  }, [isAuthenticated, user]);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -101,7 +122,7 @@ const Navbar = () => {
               {/* Pontos do usuário */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="body2" color="inherit">
-                  {user?.points || 2450} pts
+                  {typeof points === 'number' ? points.toLocaleString() : (user?.points ?? 0).toLocaleString()} pts
                 </Typography>
                 <Chip 
                   label={user?.subscription?.type || 'Free'} 

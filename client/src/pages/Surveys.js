@@ -30,6 +30,7 @@ import {
   CheckCircle
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import surveyService from '../services/surveyService';
 
 const Surveys = () => {
   const navigate = useNavigate();
@@ -43,77 +44,43 @@ const Surveys = () => {
 
   useEffect(() => {
     loadSurveys();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     filterSurveys();
   }, [surveys, searchTerm, categoryFilter, tabValue]);
 
-  const loadSurveys = () => {
-    // Simular dados de pesquisas
-    const mockSurveys = [
-      {
-        id: 1,
-        title: 'Hábitos de Consumo Digital',
-        description: 'Pesquisa sobre como você utiliza dispositivos digitais no dia a dia',
-        points: 75,
-        duration: '8-10 min',
-        category: 'Tecnologia',
-        difficulty: 'Fácil',
-        status: 'available',
-        participants: 1250,
-        deadline: '2024-02-15'
-      },
-      {
-        id: 2,
-        title: 'Preferências Alimentares',
-        description: 'Entenda melhor seus hábitos alimentares e preferências culinárias',
-        points: 60,
-        duration: '5-7 min',
-        category: 'Alimentação',
-        difficulty: 'Fácil',
-        status: 'available',
-        participants: 890,
-        deadline: '2024-02-20'
-      },
-      {
-        id: 3,
-        title: 'Experiência de Compras Online',
-        description: 'Compartilhe sua experiência com e-commerce e compras digitais',
-        points: 90,
-        duration: '10-12 min',
-        category: 'E-commerce',
-        difficulty: 'Médio',
-        status: 'available',
-        participants: 567,
-        deadline: '2024-02-18'
-      },
-      {
-        id: 4,
-        title: 'Pesquisa sobre Sustentabilidade',
-        description: 'Suas opiniões sobre práticas sustentáveis e meio ambiente',
-        points: 45,
-        duration: '6-8 min',
-        category: 'Meio Ambiente',
-        difficulty: 'Fácil',
-        status: 'completed',
-        participants: 2100,
-        completedAt: '2024-01-10'
-      },
-      {
-        id: 5,
-        title: 'Tendências de Moda 2024',
-        description: 'Pesquisa sobre tendências e preferências de moda para o ano',
-        points: 80,
-        duration: '7-9 min',
-        category: 'Moda',
-        difficulty: 'Médio',
-        status: 'in_progress',
-        participants: 445,
-        progress: 60
+  const loadSurveys = async () => {
+    try {
+      const res = await surveyService.getSurveys();
+      if (res && res.success && Array.isArray(res.surveys)) {
+        // Mapear para formato local esperado, com keys padronizadas
+        const mapped = res.surveys.map((s) => ({
+          id: s.id,
+          title: s.title,
+          description: s.description || s.summary || '',
+          points: s.points ?? s.reward ?? 0,
+          duration: s.duration || s.estimatedTime || '',
+          category: s.category || s.tags?.[0] || '',
+          difficulty: s.difficulty || s.level || 'Fácil',
+          status: s.status || (s.completedAt ? 'completed' : (s.inProgress ? 'in_progress' : 'available')),
+          participants: s.participants ?? s.views ?? 0,
+          deadline: s.deadline || s.expiresAt || null,
+          completedAt: s.completedAt || null,
+          progress: s.progress ?? 0
+        }));
+        setSurveys(mapped);
+      } else if (res && Array.isArray(res)) {
+        // API simples que retorna array
+        setSurveys(res);
+      } else {
+        setSurveys([]);
       }
-    ];
-    setSurveys(mockSurveys);
+    } catch (err) {
+      console.error('Erro ao carregar pesquisas:', err);
+      setSurveys([]);
+    }
   };
 
   const filterSurveys = () => {
