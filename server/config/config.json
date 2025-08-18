@@ -1,0 +1,21 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "./database/postpay.db",
+    "logging": true,
+    "seederStorage": "sequelize",
+    "seederStorageTableName": "sequelizemeta",
+    "migrationStorage": "sequelize",
+    "migrationStorageTableName": "sequelizemeta"
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": ":memory:",
+    "logging": false
+  },
+  "production": {
+    "dialect": "sqlite",
+    "storage": "./database/postpay.db",
+    "logging": false
+  }
+}

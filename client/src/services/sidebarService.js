@@ -1,0 +1,1 @@
+// SidebarService removido conforme solicitado.

@@ -1,0 +1,156 @@
+.rewards-store {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.rewards-store.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.store-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.store-header h1 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 2rem;
+}
+
+.user-points {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-points span {
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.user-points strong {
+  color: #2563eb;
+  font-size: 1.3rem;
+}
+
+.cart-button {
+  padding: 12px 20px;
+  background: linear-gradient(45deg, #2563eb, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cart-button:hover {
+  background: linear-gradient(45deg, #1d4ed8, #2563eb);
+  transform: translateY(-2px);
+}
+
+.store-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.store-filters button {
+  padding: 10px 20px;
+  border: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #6b7280;
+}
+
+.store-filters button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.store-filters button.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.no-products {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.no-products p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rewards-store {
+    padding: 15px;
+  }
+  
+  .store-header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  .store-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .user-points {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  
+  .store-filters {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .store-filters button {
+    flex: 1;
+    min-width: 120px;
+  }
+}
