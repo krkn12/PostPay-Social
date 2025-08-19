@@ -76,15 +76,18 @@ const StartSurvey = () => {
 
       setSubmitting(true);
       const qs = survey.questions || [];
-      const payloadResponses = qs.map((q, idx) => ({ question: q.question || `q${idx}`, answer: answers[idx] }));
+      const payloadResponses = qs.map((q, idx) => ({
+        question: q.question || `q${idx}`,
+        answer: answers[idx] === undefined || answers[idx] === null ? '' : String(answers[idx])
+      }));
 
       const res = await surveyService.participateInSurvey(id, payloadResponses);
       setSuccessMessage(res?.message || 'Pesquisa enviada com sucesso!');
       // opcional: aguardar 1s e voltar para lista
       setTimeout(() => navigate('/surveys'), 1000);
     } catch (err) {
-      console.error('Erro ao participar da pesquisa:', err);
-      setError(err?.response?.data?.message || 'Erro ao enviar respostas');
+      console.error('Erro ao participar da pesquisa:', err, err?.response?.data);
+      setError(err?.response?.data?.message || err?.message || 'Erro ao enviar respostas');
     } finally {
       setSubmitting(false);
     }
