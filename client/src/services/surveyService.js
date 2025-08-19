@@ -15,7 +15,9 @@ const surveyService = {
 
   // Participar de uma pesquisa
   participateInSurvey: async (surveyId, answers) => {
-    const response = await api.post(`/surveys/${surveyId}/participate`, { answers });
+    // O backend espera { responses: [...] }
+    const payload = Array.isArray(answers) ? { responses: answers } : (answers && answers.responses ? answers : { responses: [] });
+    const response = await api.post(`/surveys/${surveyId}/participate`, payload);
     return response.data;
   },
 
