@@ -69,6 +69,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const userData = await authService.getCurrentUser();
+      setUser(userData.user || userData);
+      return userData;
+    } catch (err) {
+      console.error('Erro ao atualizar usuário:', err);
+      return null;
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user, // Adicionar propriedade isAuthenticated
@@ -76,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
+  refreshUser,
     loading
   };
 
