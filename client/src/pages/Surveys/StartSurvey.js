@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import LoadingSpinner from '../../components/Layout/LoadingSpinner';
 import surveyService from '../../services/surveyService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const StartSurvey = () => {
   const { id } = useParams();
@@ -25,6 +26,7 @@ const StartSurvey = () => {
   const [submitting, setSubmitting] = useState(false);
   const [answers, setAnswers] = useState({});
   const [successMessage, setSuccessMessage] = useState(null);
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     const load = async () => {
@@ -82,9 +84,11 @@ const StartSurvey = () => {
       }));
 
       const res = await surveyService.participateInSurvey(id, payloadResponses);
-      setSuccessMessage(res?.message || 'Pesquisa enviada com sucesso!');
-      // opcional: aguardar 1s e voltar para lista
-      setTimeout(() => navigate('/surveys'), 1000);
+  setSuccessMessage(res?.message || 'Pesquisa enviada com sucesso!');
+  // re-sincronizar usuário (pontos etc.) para atualizar Navbar
+  try { await refreshUser(); } catch (e) { /* ignore */ }
+  // opcional: aguardar 1s e voltar para lista
+  setTimeout(() => navigate('/surveys'), 1000);
     } catch (err) {
       console.error('Erro ao participar da pesquisa:', err, err?.response?.data);
       setError(err?.response?.data?.message || err?.message || 'Erro ao enviar respostas');
