@@ -12,6 +12,8 @@ import Register from './pages/Auth/Register';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Surveys from './pages/Surveys/Surveys';
+import SurveyDetail from './pages/Surveys/SurveyDetail';
+import StartSurvey from './pages/Surveys/StartSurvey';
 import Rewards from './pages/Rewards';
 import RewardsStore from './pages/RewardsStore';
 import Profile from './pages/Profile';
@@ -42,6 +44,18 @@ function App() {
             <Route path="/surveys" element={
               <ProtectedRoute>
                 <Surveys />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/surveys/:id" element={
+              <ProtectedRoute>
+                <SurveyDetail />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/surveys/:id/start" element={
+              <ProtectedRoute>
+                <StartSurvey />
               </ProtectedRoute>
             } />
             
