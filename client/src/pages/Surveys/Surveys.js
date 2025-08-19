@@ -27,6 +27,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/Layout/LoadingSpinner';
 import { formatDate } from '../../utils/formatters';
+import surveyService from '../../services/surveyService';
 
 const Surveys = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Surveys = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
-    loadSurveys();
+  loadSurveys();
   }, []);
 
   useEffect(() => {
@@ -47,60 +48,32 @@ const Surveys = () => {
   const loadSurveys = async () => {
     try {
       setLoading(true);
-      // Simular dados de pesquisas
-      setTimeout(() => {
-        const mockSurveys = [
-          {
-            id: 1,
-            title: 'Pesquisa sobre Hábitos de Consumo',
-            description: 'Ajude-nos a entender melhor os hábitos de consumo dos brasileiros.',
-            points: 200,
-            estimatedTime: 15,
-            status: 'available',
-            category: 'Consumo',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-            participants: 1250,
-            maxParticipants: 2000
-          },
-          {
-            id: 2,
-            title: 'Avaliação de Produtos de Tecnologia',
-            description: 'Compartilhe sua opinião sobre os últimos lançamentos em tecnologia.',
-            points: 300,
-            estimatedTime: 20,
-            status: 'in_progress',
-            category: 'Tecnologia',
-            deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-            progress: 65
-          },
-          {
-            id: 3,
-            title: 'Pesquisa sobre Entretenimento',
-            description: 'Conte-nos sobre suas preferências de entretenimento e lazer.',
-            points: 150,
-            estimatedTime: 10,
-            status: 'completed',
-            category: 'Entretenimento',
-            completedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
-          },
-          {
-            id: 4,
-            title: 'Feedback sobre Aplicativos Mobile',
-            description: 'Avalie sua experiência com aplicativos móveis populares.',
-            points: 250,
-            estimatedTime: 18,
-            status: 'available',
-            category: 'Tecnologia',
-            deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-            participants: 800,
-            maxParticipants: 1500
-          }
-        ];
-        setSurveys(mockSurveys);
-        setLoading(false);
-      }, 1000);
+      const res = await surveyService.getSurveys();
+      if (res && res.success && Array.isArray(res.surveys)) {
+        const mapped = res.surveys.map((s) => ({
+          id: s.id,
+          title: s.title,
+          description: s.description || s.summary || '',
+          points: s.pointsReward ?? s.points ?? 0,
+          estimatedTime: s.estimatedTime || s.duration || '',
+          status: s.alreadyParticipated ? 'completed' : (s.canParticipate ? 'available' : 'in_progress'),
+          category: s.category || (s.creator && s.creator.name) || 'Geral',
+          deadline: s.endDate || s.deadline || null,
+          participants: s.currentResponses ?? s.participants ?? 0,
+          maxParticipants: s.maxResponses ?? s.maxParticipants ?? 1000,
+          progress: s.progress ?? 0,
+          completedAt: s.completedAt || null
+        }));
+        setSurveys(mapped);
+      } else if (Array.isArray(res)) {
+        setSurveys(res);
+      } else {
+        setSurveys([]);
+      }
     } catch (error) {
       console.error('Erro ao carregar pesquisas:', error);
+      setSurveys([]);
+    } finally {
       setLoading(false);
     }
   };
